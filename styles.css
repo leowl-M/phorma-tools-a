@@ -1,0 +1,308 @@
+/* Minimal UI, B/N, tutti i controlli UNO SOTTO L'ALTRO */
+:root {
+  --bg: #ffffff;
+  --ink: #000;
+  --muted: #333;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  background: #fff;
+  border-bottom: 1px solid var(--ink);
+}
+.topbar h1 {
+  font-size: 14px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.spacer {
+  flex: 1;
+}
+.btn {
+  appearance: none;
+  border: 1px solid var(--ink);
+  background: #fff;
+  color: #000;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 0;
+  box-shadow: none;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn.accent {
+  background: #000;
+  color: #fff;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  gap: 10px;
+  padding: 10px;
+  height: calc(100% - 41px);
+}
+#sidebar {
+  background: #fff;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  overflow: auto;
+  padding: 8px;
+  min-width: 0;
+}
+.tabbar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+  position: sticky;
+  top: -8px;
+  z-index: 5;
+  background: #fff;
+  margin: -8px -8px 12px;
+  padding: 8px;
+  border-bottom: 1px solid var(--ink);
+}
+.tabbar .tab {
+  flex: 1 1 0;
+  appearance: none;
+  border: 1px solid var(--ink);
+  background: #f3f3f3;
+  color: var(--ink);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  text-align: center;
+  border-radius: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.tabbar .tab.active {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+.tabbar .tab:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+#sidebar.tabbed .panel[data-tab] {
+  display: none;
+}
+#sidebar.tabbed .panel[data-tab].is-active {
+  display: block;
+}
+
+.panel {
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 8px;
+  margin: 0 0 12px;
+  background: #fff;
+}
+.panel h2 {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.panel h2::after {
+  content: "-";
+  font-size: 14px;
+  line-height: 1;
+  margin-left: 8px;
+}
+.panel h2:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.panel.collapsed h2::after {
+  content: "+";
+}
+.panel.collapsed > :not(h2) {
+  display: none;
+}
+
+.control-group {
+  border-top: 1px solid var(--ink);
+  margin-top: 12px;
+  padding-top: 10px;
+}
+.panel .control-group:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+.control-group h3 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 8px 0;
+  min-width: 0;
+}
+.row label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.row input[type="text"] {
+  width: 100%;
+}
+.row input[type="range"] {
+  width: 100%;
+}
+.row select {
+  width: 100%;
+}
+.row .val {
+  align-self: flex-end;
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.row button.btn {
+  width: 100%;
+}
+
+textarea#text {
+  width: 100%;
+  min-height: 70px;
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  padding: 6px;
+  resize: vertical;
+}
+
+textarea#perLetterPattern {
+  width: 100%;
+  min-height: 70px;
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  padding: 6px;
+  resize: vertical;
+}
+
+.dropzone {
+  border: 1px dashed var(--ink);
+  border-radius: 0;
+  padding: 10px;
+  text-align: center;
+  color: #111;
+  cursor: pointer;
+  background: #fff;
+}
+.dropzone.drag {
+  background: #000;
+  color: #fff;
+}
+
+#stage {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+  min-height: 0;
+}
+#canvasWrap {
+  background: #fff;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+}
+#canvasMount {
+  position: absolute;
+  inset: 0;
+}
+.hintbar {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+input,
+select {
+  border: 1px solid var(--ink);
+  background: #fff;
+  color: #000;
+  border-radius: 0;
+}
+input[type="range"] {
+  accent-color: #000;
+}
+
+/* --- Extra styles for new panels --- */
+.panel .row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 6px 0;
+}
+.panel .row label {
+  width: 100%;
+}
+.panel .row input[type="range"] {
+  width: 100%;
+}
+.panel .row .val {
+  min-width: 44px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.btn {
+  border: 1px solid var(--ink);
+  background: #fff;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.btn:active {
+  transform: translateY(1px);
+}

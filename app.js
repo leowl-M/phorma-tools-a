@@ -7,7 +7,10 @@ const glyphCache = new Map();
 
 const DEGULAR_TEXT_REGULAR_URL =
   "Font/Degular/Degular Text (14)/DegularText-Regular.otf";
+const DEGULAR_TEXT_SEMIBOLD_URL =
+  "Font/Degular/Degular Text (14)/DegularText-Semibold.otf";
 const DEFAULT_FONT_URLS = [
+  DEGULAR_TEXT_SEMIBOLD_URL,
   DEGULAR_TEXT_REGULAR_URL,
   "https://cdn.jsdelivr.net/npm/@fontsource/roboto/files/roboto-latin-400-normal.ttf",
   "https://cdn.jsdelivr.net/npm/@fontsource/inter/files/inter-latin-400-normal.ttf",
@@ -577,6 +580,17 @@ const gv = (el, def = 0) =>
     : def;
 const gb = (el, def = false) => (el ? !!el.checked : def);
 
+// Testo: solo parole, MAIUSCOLO (niente numeri/punteggiatura)
+function sanitizeTextInput(raw) {
+  let s = (raw ?? "").toString();
+  s = s.replace(/[\r\n\t]+/g, " ");
+  s = s.toUpperCase();
+  // Mantieni solo lettere Unicode e spazi
+  s = s.replace(/[^\p{L} ]+/gu, "");
+  s = s.replace(/\s+/g, " ").trim();
+  return s;
+}
+
 function syncVal(id, formatter = (v) => v) {
   const input = ui[id];
   const out = ui[id + "Val"];
@@ -993,7 +1007,7 @@ ui.localFont?.addEventListener("change", async () => {
 byId("canvasWrap")?.addEventListener("dblclick", () => {
   const t = prompt("Testo di anteprima:", gv(ui.text, ""));
   if (t != null && ui.text) {
-    ui.text.value = t;
+    ui.text.value = sanitizeTextInput(t);
     invalidateLayout();
     redraw();
   }
@@ -1027,12 +1041,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   initRangeDoubleClickReset();
   if (!sketch) makeSketch();
   await loadDefaultFontSafe();
-  const saved = localStorage.getItem("FGS_USER_PRESET");
-  if (saved) {
-    try {
-      loadState(sanitizeConfig(JSON.parse(saved), true));
-    } catch {}
+  // Testo: forza MAIUSCOLO e solo parole
+  if (ui.text) {
+    const apply = () => {
+      const cleaned = sanitizeTextInput(ui.text.value);
+      if (ui.text.value !== cleaned) ui.text.value = cleaned;
+      invalidateLayout();
+      redraw();
+    };
+    ui.text.addEventListener("input", apply);
+    apply();
   }
+
 });
 
 /* ===== FONT LOAD ===== */
@@ -1158,13 +1178,13 @@ function makeSketch() {
 /* ===== STATE ===== */
 function getState() {
   return {
-    text: gv(ui.text, "PHORMA"),
+    text: sanitizeTextInput(gv(ui.text, "PHORMA")),
     fontSize: gv(ui.fontSize, 140),
-    lineHeight: gv(ui.lineHeight, 1.15),
-    tracking: gv(ui.tracking, 0),
-    wordSpacing: gv(ui.wordSpacing, 40),
-    align: gv(ui.align, "center"),
-    padding: gv(ui.padding, 32),
+    lineHeight: 1,
+    tracking: 0,
+    wordSpacing: 0,
+    align: "center",
+    padding: 0,
 
     // per-letter spacing
     perLetterEnabled: gb(ui.perLetterEnabled, false),
@@ -1173,35 +1193,35 @@ function getState() {
     perLetterIncludeSpaces: gb(ui.perLetterIncludeSpaces, false),
     perLetterScale: gv(ui.perLetterScale, 1),
 
-    amount: gv(ui.amount, 5),
-    freq: gv(ui.freq, 80),
-    seed: gv(ui.seed, 123) | 0,
+    amount: 0,
+    freq: 80,
+    seed: 123,
     speed: gv(ui.speed, 0.6),
-    animate: gb(ui.animate, false),
-    noiseOctaves: gv(ui.noiseOctaves, 1),
+    animate: false,
+    noiseOctaves: 1,
     noiseFalloff: gv(ui.noiseFalloff, 0.5),
     noiseShape: gv(ui.noiseShape, 0),
     noiseContrast: gv(ui.noiseContrast, 0),
     noiseBias: gv(ui.noiseBias, 0),
     noiseClamp: gv(ui.noiseClamp, 1),
-    noiseMix: gv(ui.noiseMix, 1),
-    fxContrast: gb(ui.fxContrast, false),
+    noiseMix: 0,
+    fxContrast: gb(ui.fxContrast, true),
     contrastAmount: gv(ui.contrastAmount, 0),
     contrastAngle: (gv(ui.contrastAngle, 30) * Math.PI) / 180,
     contrastSharpness: gv(ui.contrastSharpness, 0),
     contrastMix: gv(ui.contrastMix, 1),
     contrastClamp: gv(ui.contrastClamp, 1),
     contrastBalance: gv(ui.contrastBalance, 0),
-    zoneMix: gv(ui.zoneMix, 0),
+    zoneMix: 0,
     zoneAscender: gv(ui.zoneAscender, 1),
     zoneXHeight: gv(ui.zoneXHeight, 1),
     zoneDescender: gv(ui.zoneDescender, 1),
-    counterProtect: gb(ui.counterProtect, true),
+    counterProtect: false,
     counterStrength: gv(ui.counterStrength, 0.6),
-    axisX: gv(ui.axisX, 1),
-    axisY: gv(ui.axisY, 1),
-    shear: (gv(ui.shear, 0) * Math.PI) / 180,
-    rotation: (gv(ui.rotation, 0) * Math.PI) / 180,
+    axisX: 0,
+    axisY: 0,
+    shear: 0,
+    rotation: 0,
     jitter: gv(ui.jitter, 0),
     jitterMode: gv(ui.jitterMode, "uniform"),
     jitterBias: gv(ui.jitterBias, 0),
@@ -1210,7 +1230,7 @@ function getState() {
     useKerning: gb(ui.useKerning, true),
     autoHint: gb(ui.autoHint, true),
 
-    fxWave: gb(ui.fxWave, false),
+    fxWave: false,
     waveAmpX: gv(ui.waveAmpX, 0),
     waveAmpY: gv(ui.waveAmpY, 0),
     waveLength: gv(ui.waveLength, 220),
@@ -1220,7 +1240,7 @@ function getState() {
     waveSharpness: gv(ui.waveSharpness, 0),
     waveMix: gv(ui.waveMix, 1),
 
-    fxBend: gb(ui.fxBend, false),
+    fxBend: false,
     bendAmount: gv(ui.bendAmount, 0),
     bendExponent: gv(ui.bendExponent, 2),
     bendPivot: gv(ui.bendPivot, 0.5),
@@ -1229,34 +1249,34 @@ function getState() {
 
     fillColor: gv(ui.fillColor, "#000000"),
     strokeColor: gv(ui.strokeColor, "#000000"),
-    strokeWeight: gv(ui.strokeWeight, 0),
-    useGradient: gb(ui.useGradient, false),
+    strokeWeight: gv(ui.strokeWeight, 8),
+    useGradient: false,
     gradA: gv(ui.gradA, "#000000"),
     gradB: gv(ui.gradB, "#ffffff"),
     gradAngle: (gv(ui.gradAngle, 0) * Math.PI) / 180,
     showPoints: gb(ui.showPoints, false),
     showBounds: gb(ui.showBounds, false),
 
-    wrapWidth: gv(ui.wrapWidth, 800),
-    autoWrap: gb(ui.autoWrap, true),
-    scaleX: gv(ui.scaleX, 100) / 100,
-    scaleY: gv(ui.scaleY, 100) / 100,
-    baselineShift: gv(ui.baselineShift, 0),
-    lineJoin: gv(ui.lineJoin, "miter"),
-    lineCap: gv(ui.lineCap, "butt"),
-    miterLimit: gv(ui.miterLimit, 10),
-    fillAlpha: gv(ui.fillAlpha, 1),
-    strokeAlpha: gv(ui.strokeAlpha, 1),
-    bgColor: gv(ui.bgColor, "#ffffff"),
-    vfAxes: window.__vfAxes || null,
+    wrapWidth: 800,
+    autoWrap: false,
+    scaleX: 1,
+    scaleY: 1,
+    baselineShift: 0,
+    lineJoin: gv(ui.lineJoin, "round"),
+    lineCap: gv(ui.lineCap, "round"),
+    miterLimit: 10,
+    fillAlpha: 1,
+    strokeAlpha: 1,
+    bgColor: "#ffffff",
+    vfAxes: null,
 
-    showGrid: gb(ui.showGrid, false),
+    showGrid: false,
     gridSize: gv(ui.gridSize, 32),
     showSafe: gb(ui.showSafe, false),
-    exportBg: gb(ui.exportBg, true),
+    exportBg: true,
 
     // Quant
-    fxQuantize: gb(ui.fxQuantize, false),
+    fxQuantize: false,
     quantMode: gv(ui.quantMode, "grid"),
     quantStepX: gv(ui.quantStepX, 6),
     quantStepY: gv(ui.quantStepY, 6),
@@ -1267,13 +1287,13 @@ function getState() {
     quantStepA: (gv(ui.quantStepA, 15) * Math.PI) / 180,
 
     // Curvature bitcrush
-    fxCurvCrush: gb(ui.fxCurvCrush, false),
+    fxCurvCrush: gb(ui.fxCurvCrush, true),
     curvSegments: gv(ui.curvSegments, 8),
     curvAngleSnap: (gv(ui.curvAngleSnap, 0) * Math.PI) / 180,
     curvTolerance: gv(ui.curvTolerance, 0),
 
     // Slice & Shift
-    fxSlice: gb(ui.fxSlice, false),
+    fxSlice: false,
     sliceH: gv(ui.sliceH, 24),
     sliceShiftX: gv(ui.sliceShiftX, 12),
     sliceShiftY: gv(ui.sliceShiftY, 0),
@@ -1284,7 +1304,7 @@ function getState() {
     sliceProb: gv(ui.sliceProb, 1),
 
     // Gapify
-    fxGap: gb(ui.fxGap, false),
+    fxGap: false,
     gapProb: gv(ui.gapProb, 0),
     gapLen: gv(ui.gapLen, 6),
     gapKeep: gv(ui.gapKeep, 20),
@@ -1299,7 +1319,7 @@ function getState() {
     shapeFollow: gb(ui.shapeFollow, true),
 
     // Kinetic
-    kinMode: gv(ui.kinMode, "off"),
+    kinMode: "off",
     kinPeriod: gv(ui.kinPeriod, 12),
     kinPhase: (gv(ui.kinPhase, 0) * Math.PI) / 180,
     kinOrigin: gv(ui.kinOrigin, "center"),

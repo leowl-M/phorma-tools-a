@@ -52,17 +52,9 @@
           >
             Effetti
           </button>
-          <button
-            type="button"
-            class="tab"
-            role="tab"
-            aria-selected="false"
-            data-tab-target="canvas"
-          >
-            Canvas
-          </button>
         </div>
 
+        <!-- TIPOGRAFIA -->
         <section class="panel" data-tab="typography">
           <h2>Font</h2>
           <div id="drop" class="dropzone">
@@ -77,38 +69,24 @@
           </div>
           <div class="row">
             <label>Nome</label>
-            <input
-              id="fontName"
-              type="text"
-              placeholder="(dal font)"
-              disabled
-            />
+            <input id="fontName" type="text" placeholder="(dal font)" disabled />
           </div>
           <div class="row">
             <label>Stile</label>
-            <input
-              id="fontStyle"
-              type="text"
-              placeholder="(dal font)"
-              disabled
-            />
+            <input id="fontStyle" type="text" placeholder="(dal font)" disabled />
           </div>
           <div class="row">
-            <label
-              ><input type="checkbox" id="useKerning" checked /> Kerning</label
-            >
+            <label><input type="checkbox" id="useKerning" checked /> Kerning</label>
           </div>
           <div class="row">
-            <label
-              ><input type="checkbox" id="autoHint" checked /> Auto hint</label
-            >
+            <label><input type="checkbox" id="autoHint" checked /> Auto hint</label>
           </div>
         </section>
 
         <section class="panel collapsed" data-tab="typography">
           <h2>Testo</h2>
           <div class="row">
-            <label for="text">Contenuto</label>
+            <label for="text">Contenuto (solo parole, MAIUSCOLO)</label>
             <textarea id="text">PHORMA</textarea>
           </div>
           <div class="row">
@@ -116,1366 +94,137 @@
             <input type="range" id="fontSize" min="24" max="640" value="140" />
             <span class="val" id="fontSizeVal">140</span>
           </div>
-          <div class="row">
-            <label>Interlinea</label>
-            <input
-              type="range"
-              id="lineHeight"
-              min="0.9"
-              max="2.0"
-              step="0.01"
-              value="1.15"
-            />
-            <span class="val" id="lineHeightVal">1.15</span>
-          </div>
-          <div class="row">
-            <label>Tracking</label>
-            <input
-              type="range"
-              id="tracking"
-              min="-100"
-              max="200"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="trackingVal">0</span>
-          </div>
-          <div class="row">
-            <label>Word spacing</label>
-            <input
-              type="range"
-              id="wordSpacing"
-              min="0"
-              max="300"
-              step="1"
-              value="40"
-            />
-            <span class="val" id="wordSpacingVal">40</span>
-          </div>
-          <div class="row">
-            <label>Allineamento</label>
-            <select id="align">
-              <option value="left">Sinistra</option>
-              <option value="center" selected>Centro</option>
-              <option value="right">Destra</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>Margini</label>
-            <input
-              type="range"
-              id="padding"
-              min="0"
-              max="120"
-              step="1"
-              value="32"
-            />
-            <span class="val" id="paddingVal">32</span>
-          </div>
         </section>
 
-        <!-- NUOVO: Spaziatura per-lettera -->
-        <section class="panel collapsed" data-tab="typography">
-          <h2>Spaziatura (singole lettere)</h2>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="perLetterEnabled" /> Attiva pattern
-              per-lettera</label
-            >
-          </div>
-          <div class="row">
-            <label>Pattern (px)</label>
-            <textarea id="perLetterPattern" placeholder="es: 0, 8, -4, 0, 12">
-0</textarea
-            >
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="perLetterRepeat" checked /> Ripeti
-              pattern</label
-            >
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="perLetterIncludeSpaces" /> Applica
-              anche agli spazi</label
-            >
-          </div>
-          <div class="row">
-            <label>Scala pattern</label>
-            <input
-              type="range"
-              id="perLetterScale"
-              min="-3"
-              max="3"
-              step="0.05"
-              value="1"
-            />
-            <span class="val" id="perLetterScaleVal">1</span>
-          </div>
-        </section>
-
-        <section class="panel collapsed" data-tab="typography">
-          <h2>Variable font</h2>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="detectVF" checked /> Rileva assi
-              VF</label
-            >
-          </div>
-          <div id="vfAxesRow"></div>
-        </section>
-
+        <!-- DEFORMAZIONI -->
         <section class="panel" data-tab="deformation">
           <h2>Distorsioni statiche</h2>
-          <div class="control-group">
-            <h3>Impostazioni generali</h3>
-            <div class="row">
-              <label>Quantità</label>
-              <input
-                type="range"
-                id="amount"
-                min="0"
-                max="120"
-                step="1"
-                value="5"
-              />
-              <span class="val" id="amountVal">5</span>
-            </div>
-            <div class="row">
-              <label>Seed</label>
-              <input
-                type="number"
-                id="seed"
-                value="123"
-                min="0"
-                max="999999"
-              />
-            </div>
-            <div class="row">
-              <label>Frequenza base</label>
-              <input
-                type="range"
-                id="freq"
-                min="1"
-                max="240"
-                step="1"
-                value="80"
-              />
-              <span class="val" id="freqVal">80</span>
-            </div>
-            <div class="row">
-              <label>Asse X</label>
-              <input
-                type="range"
-                id="axisX"
-                min="0"
-                max="1"
-                step="0.01"
-                value="1"
-              />
-              <span class="val" id="axisXVal">1</span>
-            </div>
-            <div class="row">
-              <label>Asse Y</label>
-              <input
-                type="range"
-                id="axisY"
-                min="0"
-                max="1"
-                step="0.01"
-                value="1"
-              />
-              <span class="val" id="axisYVal">1</span>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <h3>Trasformazioni globali</h3>
-            <div class="row">
-              <label>Shear (slant)</label>
-              <input
-                type="range"
-                id="shear"
-                min="-30"
-                max="30"
-                step="0.5"
-                value="0"
-              />
-              <span class="val" id="shearVal">0</span>
-            </div>
-            <div class="row">
-              <label>Rotazione</label>
-              <input
-                type="range"
-                id="rotation"
-                min="-45"
-                max="45"
-                step="0.5"
-                value="0"
-              />
-              <span class="val" id="rotationVal">0</span>
-            </div>
-          </div>
 
           <div class="control-group">
             <h3>Jitter</h3>
             <div class="row">
               <label>Jitter</label>
-              <input
-                type="range"
-                id="jitter"
-                min="0"
-                max="50"
-                step="1"
-                value="0"
-              />
+              <input type="range" id="jitter" min="0" max="19" step="1" value="0" />
               <span class="val" id="jitterVal">0</span>
-            </div>
-            <div class="row">
-              <label>Modalità jitter</label>
-              <select id="jitterMode">
-                <option value="uniform" selected>Uniforme</option>
-                <option value="soft">Morbido</option>
-                <option value="gaussian">Gaussiano</option>
-              </select>
-            </div>
-            <div class="row">
-              <label>Bias jitter</label>
-              <input
-                type="range"
-                id="jitterBias"
-                min="-1"
-                max="1"
-                step="0.05"
-                value="0"
-              />
-              <span class="val" id="jitterBiasVal">0</span>
-            </div>
-            <div class="row">
-              <label>Clamp jitter</label>
-              <input
-                type="range"
-                id="jitterClamp"
-                min="0"
-                max="1"
-                step="0.05"
-                value="1"
-              />
-              <span class="val" id="jitterClampVal">1</span>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <h3>Rumore</h3>
-            <div class="row">
-              <label>Ottave rumore</label>
-              <input
-                type="range"
-                id="noiseOctaves"
-                min="1"
-                max="6"
-                step="1"
-                value="1"
-              />
-              <span class="val" id="noiseOctavesVal">1</span>
-            </div>
-            <div class="row">
-              <label>Falloff rumore</label>
-              <input
-                type="range"
-                id="noiseFalloff"
-                min="0"
-                max="1"
-                step="0.05"
-                value="0.5"
-              />
-              <span class="val" id="noiseFalloffVal">0.5</span>
-            </div>
-            <div class="row">
-              <label>Morbidezza rumore</label>
-              <input
-                type="range"
-                id="noiseShape"
-                min="-1"
-                max="1"
-                step="0.05"
-                value="0"
-              />
-              <span class="val" id="noiseShapeVal">0</span>
-            </div>
-            <div class="row">
-              <label>Contrasto rumore</label>
-              <input
-                type="range"
-                id="noiseContrast"
-                min="-0.9"
-                max="0.9"
-                step="0.05"
-                value="0"
-              />
-              <span class="val" id="noiseContrastVal">0</span>
-            </div>
-            <div class="row">
-              <label>Bias rumore</label>
-              <input
-                type="range"
-                id="noiseBias"
-                min="-1"
-                max="1"
-                step="0.05"
-                value="0"
-              />
-              <span class="val" id="noiseBiasVal">0</span>
-            </div>
-            <div class="row">
-              <label>Clamp rumore</label>
-              <input
-                type="range"
-                id="noiseClamp"
-                min="0"
-                max="1"
-                step="0.05"
-                value="1"
-              />
-              <span class="val" id="noiseClampVal">1</span>
-            </div>
-            <div class="row">
-              <label>Mix rumore</label>
-              <input
-                type="range"
-                id="noiseMix"
-                min="0"
-                max="1"
-                step="0.01"
-                value="1"
-              />
-              <span class="val" id="noiseMixVal">1</span>
             </div>
           </div>
 
           <div class="control-group">
             <h3>Contrasto calligrafico</h3>
             <div class="row">
-              <label
-                ><input type="checkbox" id="fxContrast" /> Contrasto
-                calligrafico</label
-              >
+              <label><input type="checkbox" id="fxContrast" checked /> Contrasto calligrafico</label>
             </div>
             <div class="row">
               <label>Intensità contrasto</label>
-              <input
-                type="range"
-                id="contrastAmount"
-                min="-80"
-                max="80"
-                step="1"
-                value="0"
-              />
+              <input type="range" id="contrastAmount" min="-100" max="100" step="1" value="0" />
               <span class="val" id="contrastAmountVal">0</span>
             </div>
             <div class="row">
               <label>Angolo penna</label>
-              <input
-                type="range"
-                id="contrastAngle"
-                min="0"
-                max="360"
-                step="1"
-                value="30"
-              />
+              <input type="range" id="contrastAngle" min="0" max="365" step="1" value="30" />
               <span class="val" id="contrastAngleVal">30</span>
             </div>
-            <div class="row">
+            <!-- <div class="row">
               <label>Sharpness</label>
-              <input
-                type="range"
-                id="contrastSharpness"
-                min="0"
-                max="1"
-                step="0.01"
-                value="0"
-              />
+              <input type="range" id="contrastSharpness" min="0" max="1" step="0.01" value="0" />
               <span class="val" id="contrastSharpnessVal">0</span>
-            </div>
+            </div> -->
             <div class="row">
               <label>Mix effetto</label>
-              <input
-                type="range"
-                id="contrastMix"
-                min="0"
-                max="1"
-                step="0.01"
-                value="1"
-              />
+              <input type="range" id="contrastMix" min="0" max="1.20" step="0.01" value="1" />
               <span class="val" id="contrastMixVal">1</span>
             </div>
-            <div class="row">
+            <!-- <div class="row">
               <label>Clamp contrasto</label>
-              <input
-                type="range"
-                id="contrastClamp"
-                min="0"
-                max="1"
-                step="0.01"
-                value="1"
-              />
+              <input type="range" id="contrastClamp" min="0" max="1" step="0.01" value="1" />
               <span class="val" id="contrastClampVal">1</span>
-            </div>
+            </div> -->
             <div class="row">
               <label>Balance</label>
-              <input
-                type="range"
-                id="contrastBalance"
-                min="-1"
-                max="1"
-                step="0.05"
-                value="0"
-              />
+              <input type="range" id="contrastBalance" min="-1" max="1" step="0.05" value="0" />
               <span class="val" id="contrastBalanceVal">0</span>
             </div>
           </div>
-
-          <div class="control-group">
-            <h3>Zone</h3>
-            <div class="row">
-              <label>Mix zone</label>
-              <input
-                type="range"
-                id="zoneMix"
-                min="0"
-                max="1"
-                step="0.01"
-                value="0"
-              />
-              <span class="val" id="zoneMixVal">0</span>
-            </div>
-            <div class="row">
-              <label>Peso ascender</label>
-              <input
-                type="range"
-                id="zoneAscender"
-                min="0"
-                max="2"
-                step="0.05"
-                value="1"
-              />
-              <span class="val" id="zoneAscenderVal">1</span>
-            </div>
-            <div class="row">
-              <label>Peso x-height</label>
-              <input
-                type="range"
-                id="zoneXHeight"
-                min="0"
-                max="2"
-                step="0.05"
-                value="1"
-              />
-              <span class="val" id="zoneXHeightVal">1</span>
-            </div>
-            <div class="row">
-              <label>Peso discendente</label>
-              <input
-                type="range"
-                id="zoneDescender"
-                min="0"
-                max="2"
-                step="0.05"
-                value="1"
-              />
-              <span class="val" id="zoneDescenderVal">1</span>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <h3>Controparti</h3>
-            <div class="row">
-              <label
-                ><input type="checkbox" id="counterProtect" checked />
-                Proteggi controparti</label
-              >
-            </div>
-            <div class="row">
-              <label>Forza protezione</label>
-              <input
-                type="range"
-                id="counterStrength"
-                min="0"
-                max="1"
-                step="0.01"
-                value="0.6"
-              />
-              <span class="val" id="counterStrengthVal">0.6</span>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <h3>Bend (arch)</h3>
-            <div class="row">
-              <label><input type="checkbox" id="fxBend" /> Bend (arch)</label>
-            </div>
-            <div class="row">
-              <label>Intensità bend</label>
-              <input
-                type="range"
-                id="bendAmount"
-                min="-200"
-                max="200"
-                step="1"
-                value="0"
-              />
-              <span class="val" id="bendAmountVal">0</span>
-            </div>
-            <div class="row">
-              <label>Esponente bend</label>
-              <input
-                type="range"
-                id="bendExponent"
-                min="0.25"
-                max="4"
-                step="0.05"
-                value="2"
-              />
-              <span class="val" id="bendExponentVal">2</span>
-            </div>
-            <div class="row">
-              <label>Pivot bend</label>
-              <input
-                type="range"
-                id="bendPivot"
-                min="0"
-                max="1"
-                step="0.01"
-                value="0.5"
-              />
-              <span class="val" id="bendPivotVal">0.5</span>
-            </div>
-            <div class="row">
-              <label>Mix bend</label>
-              <input
-                type="range"
-                id="bendMix"
-                min="0"
-                max="1"
-                step="0.01"
-                value="1"
-              />
-              <span class="val" id="bendMixVal">1</span>
-            </div>
-            <div class="row">
-              <label>Clamp bend</label>
-              <input
-                type="range"
-                id="bendClamp"
-                min="0"
-                max="1"
-                step="0.05"
-                value="0"
-              />
-              <span class="val" id="bendClampVal">0</span>
-            </div>
-          </div>
         </section>
 
-        <section class="panel collapsed" data-tab="deformation">
-          <h2>Distorsioni animate</h2>
-          <div class="row">
-            <label><input type="checkbox" id="animate" /> Animazione</label>
-          </div>
-          <div class="row">
-            <label>Velocità</label>
-            <input
-              type="range"
-              id="speed"
-              min="0"
-              max="2"
-              step="0.01"
-              value="0.6"
-            />
-            <span class="val" id="speedVal">0.6</span>
-          </div>
-          <div class="row">
-            <label><input type="checkbox" id="fxWave" /> Onda (wave)</label>
-          </div>
-          <div class="row">
-            <label>Forma onda</label>
-            <select id="waveShape">
-              <option value="sine" selected>Seno</option>
-              <option value="triangle">Triangolare</option>
-              <option value="saw">Dente di sega</option>
-              <option value="square">Quadra</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>Ampiezza X</label>
-            <input
-              type="range"
-              id="waveAmpX"
-              min="0"
-              max="80"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="waveAmpXVal">0</span>
-          </div>
-          <div class="row">
-            <label>Ampiezza Y</label>
-            <input
-              type="range"
-              id="waveAmpY"
-              min="0"
-              max="80"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="waveAmpYVal">0</span>
-          </div>
-          <div class="row">
-            <label>Lunghezza</label>
-            <input
-              type="range"
-              id="waveLength"
-              min="20"
-              max="600"
-              step="1"
-              value="220"
-            />
-            <span class="val" id="waveLengthVal">220</span>
-          </div>
-          <div class="row">
-            <label>Fase</label>
-            <input
-              type="range"
-              id="wavePhase"
-              min="0"
-              max="360"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="wavePhaseVal">0</span>
-          </div>
-          <div class="row">
-            <label>Direzione onda</label>
-            <input
-              type="range"
-              id="waveDirection"
-              min="0"
-              max="360"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="waveDirectionVal">0</span>
-          </div>
-          <div class="row">
-            <label>Sharpness onda</label>
-            <input
-              type="range"
-              id="waveSharpness"
-              min="-0.9"
-              max="0.9"
-              step="0.05"
-              value="0"
-            />
-            <span class="val" id="waveSharpnessVal">0</span>
-          </div>
-          <div class="row">
-            <label>Mix onda</label>
-            <input
-              type="range"
-              id="waveMix"
-              min="0"
-              max="1"
-              step="0.01"
-              value="1"
-            />
-            <span class="val" id="waveMixVal">1</span>
-          </div>
-        </section>
-
-        <section class="panel collapsed" data-tab="deformation">
-          <h2>Kinetic Typography</h2>
-          <div class="row">
-            <label>Pattern</label>
-            <select id="kinMode">
-              <option value="off" selected>Off</option>
-              <option value="sine">Sine</option>
-              <option value="triangle">Triangle</option>
-              <option value="saw">Saw</option>
-              <option value="square">Square</option>
-              <option value="random">Random</option>
-              <option value="noise">Noise</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>Periodo (unità)</label>
-            <input
-              type="range"
-              id="kinPeriod"
-              min="2"
-              max="64"
-              step="1"
-              value="12"
-            />
-            <span class="val" id="kinPeriodVal">12</span>
-          </div>
-          <div class="row">
-            <label>Fase (°)</label>
-            <input
-              type="range"
-              id="kinPhase"
-              min="0"
-              max="360"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="kinPhaseVal">0</span>
-          </div>
-          <div class="row">
-            <label>Origine</label>
-            <select id="kinOrigin">
-              <option value="left">Sinistra</option>
-              <option value="center" selected>Centro</option>
-              <option value="right">Destra</option>
-            </select>
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="kinRestart" checked /> Restart per
-              riga</label
-            >
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="kinPerWord" /> Raggruppa per
-              parola</label
-            >
-          </div>
-          <div class="row">
-            <label>Envelope</label>
-            <select id="kinEnvelope">
-              <option value="none" selected>Nessuno</option>
-              <option value="in">Ease-in</option>
-              <option value="out">Ease-out</option>
-              <option value="inout">Ease-in-out</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>Falloff</label>
-            <input
-              type="range"
-              id="kinFalloff"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0"
-            />
-            <span class="val" id="kinFalloffVal">0</span>
-          </div>
-          <div class="row">
-            <label>Noise scale</label>
-            <input
-              type="range"
-              id="kinNoiseScale"
-              min="2"
-              max="64"
-              step="1"
-              value="12"
-            />
-            <span class="val" id="kinNoiseScaleVal">12</span>
-          </div>
-          <div class="row">
-            <label>Offset X (px)</label>
-            <input
-              type="range"
-              id="kinOffX"
-              min="-80"
-              max="80"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="kinOffXVal">0</span>
-          </div>
-          <div class="row">
-            <label>Offset Y (px)</label>
-            <input
-              type="range"
-              id="kinOffY"
-              min="-80"
-              max="80"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="kinOffYVal">0</span>
-          </div>
-          <div class="row">
-            <label>Rotazione (°)</label>
-            <input
-              type="range"
-              id="kinRot"
-              min="-45"
-              max="45"
-              step="0.5"
-              value="0"
-            />
-            <span class="val" id="kinRotVal">0</span>
-          </div>
-          <div class="row">
-            <label>Baseline (px)</label>
-            <input
-              type="range"
-              id="kinBase"
-              min="-80"
-              max="80"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="kinBaseVal">0</span>
-          </div>
-          <div class="row">
-            <label>Scala X (%)</label>
-            <input
-              type="range"
-              id="kinScaleX"
-              min="-100"
-              max="100"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="kinScaleXVal">0</span>
-          </div>
-          <div class="row">
-            <label>Scala Y (%)</label>
-            <input
-              type="range"
-              id="kinScaleY"
-              min="-100"
-              max="100"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="kinScaleYVal">0</span>
-          </div>
-        </section>
-
-        <section class="panel collapsed" data-tab="effects">
-          <h2>Quantize</h2>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="fxQuantize" /> Quantizza punti
-              (glitch)</label
-            >
-          </div>
-          <div class="row">
-            <label>Modalità</label>
-            <select id="quantMode">
-              <option value="grid" selected>Griglia</option>
-              <option value="grid-angled">Griglia (angolata)</option>
-              <option value="x">Solo X</option>
-              <option value="y">Solo Y</option>
-              <option value="polar">Polare</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>Step X</label>
-            <input
-              type="range"
-              id="quantStepX"
-              min="1"
-              max="40"
-              step="1"
-              value="6"
-            />
-            <span class="val" id="quantStepXVal">6</span>
-          </div>
-          <div class="row">
-            <label>Step Y</label>
-            <input
-              type="range"
-              id="quantStepY"
-              min="1"
-              max="40"
-              step="1"
-              value="6"
-            />
-            <span class="val" id="quantStepYVal">6</span>
-          </div>
-          <div class="row">
-            <label>Angolo griglia (°)</label>
-            <input
-              type="range"
-              id="quantAngle"
-              min="0"
-              max="360"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="quantAngleVal">0</span>
-          </div>
-          <div class="row">
-            <label>Probabilità snap</label>
-            <input
-              type="range"
-              id="quantProb"
-              min="0"
-              max="1"
-              step="0.01"
-              value="1"
-            />
-            <span class="val" id="quantProbVal">1</span>
-          </div>
-          <div class="row">
-            <label>Intensità (mix)</label>
-            <input
-              type="range"
-              id="quantMix"
-              min="0"
-              max="1"
-              step="0.01"
-              value="1"
-            />
-            <span class="val" id="quantMixVal">1</span>
-          </div>
-          <div class="row">
-            <label>Step R (polare)</label>
-            <input
-              type="range"
-              id="quantStepR"
-              min="0"
-              max="80"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="quantStepRVal">0</span>
-          </div>
-          <div class="row">
-            <label>Step angolo (° polare)</label>
-            <input
-              type="range"
-              id="quantStepA"
-              min="0"
-              max="90"
-              step="1"
-              value="15"
-            />
-            <span class="val" id="quantStepAVal">15</span>
-          </div>
-        </section>
-
-        <section class="panel collapsed" data-tab="effects">
+        <!-- EFFETTI -->
+        <section class="panel" data-tab="effects">
           <h2>Curvature Bitcrush</h2>
           <div class="row">
-            <label
-              ><input type="checkbox" id="fxCurvCrush" /> Curvature
-              Bitcrush</label
-            >
+            <label><input type="checkbox" id="fxCurvCrush" checked /> Curvature Bitcrush</label>
           </div>
           <div class="row">
             <label>Segmenti / curva</label>
-            <input
-              type="range"
-              id="curvSegments"
-              min="1"
-              max="24"
-              step="1"
-              value="8"
-            />
+            <input type="range" id="curvSegments" min="1" max="24" step="1" value="8" disabled/>
             <span class="val" id="curvSegmentsVal">8</span>
           </div>
           <div class="row">
             <label>Angle-snap (°)</label>
-            <input
-              type="range"
-              id="curvAngleSnap"
-              min="0"
-              max="90"
-              step="1"
-              value="0"
-            />
+            <input type="range" id="curvAngleSnap" min="0" max="90" step="1" value="90" disabled />
             <span class="val" id="curvAngleSnapVal">0</span>
           </div>
           <div class="row">
             <label>Tolleranza semplifica</label>
-            <input
-              type="range"
-              id="curvTolerance"
-              min="0"
-              max="8"
-              step="0.1"
-              value="0"
-            />
+            <input type="range" id="curvTolerance" min="0" max="8" step="0.1" value="0" disabled/>
             <span class="val" id="curvToleranceVal">0</span>
-          </div>
-        </section>
-
-        <section class="panel collapsed" data-tab="effects">
-          <h2>Slice &amp; Shift</h2>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="fxSlice" /> Slice &amp; Shift</label
-            >
-          </div>
-          <div class="row">
-            <label>Altezza slice</label>
-            <input
-              type="range"
-              id="sliceH"
-              min="4"
-              max="120"
-              step="1"
-              value="24"
-            />
-            <span class="val" id="sliceHVal">24</span>
-          </div>
-          <div class="row">
-            <label>Shift X (px)</label>
-            <input
-              type="range"
-              id="sliceShiftX"
-              min="-120"
-              max="120"
-              step="1"
-              value="12"
-            />
-            <span class="val" id="sliceShiftXVal">12</span>
-          </div>
-          <div class="row">
-            <label>Shift Y (px)</label>
-            <input
-              type="range"
-              id="sliceShiftY"
-              min="-60"
-              max="60"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="sliceShiftYVal">0</span>
-          </div>
-          <div class="row">
-            <label>Pattern</label>
-            <select id="slicePattern">
-              <option value="sine" selected>Sine</option>
-              <option value="triangle">Triangle</option>
-              <option value="random">Random</option>
-              <option value="noise">Noise</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>Fase (°)</label>
-            <input
-              type="range"
-              id="slicePhase"
-              min="0"
-              max="360"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="slicePhaseVal">0</span>
-          </div>
-          <div class="row">
-            <label>Noise scale</label>
-            <input
-              type="range"
-              id="sliceNoiseScale"
-              min="2"
-              max="64"
-              step="1"
-              value="12"
-            />
-            <span class="val" id="sliceNoiseScaleVal">12</span>
-          </div>
-          <div class="row">
-            <label>Jitter slice</label>
-            <input
-              type="range"
-              id="sliceJitter"
-              min="0"
-              max="30"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="sliceJitterVal">0</span>
-          </div>
-          <div class="row">
-            <label>Prob. attivazione</label>
-            <input
-              type="range"
-              id="sliceProb"
-              min="0"
-              max="1"
-              step="0.01"
-              value="1"
-            />
-            <span class="val" id="sliceProbVal">1</span>
-          </div>
-        </section>
-
-        <section class="panel collapsed" data-tab="effects">
-          <h2>Gapify</h2>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="fxGap" /> Gapify (interruzioni)</label
-            >
-          </div>
-          <div class="row">
-            <label>Probabilità gap</label>
-            <input
-              type="range"
-              id="gapProb"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0"
-            />
-            <span class="val" id="gapProbVal">0</span>
-          </div>
-          <div class="row">
-            <label>Lunghezza gap (px)</label>
-            <input
-              type="range"
-              id="gapLen"
-              min="0"
-              max="40"
-              step="1"
-              value="6"
-            />
-            <span class="val" id="gapLenVal">6</span>
-          </div>
-          <div class="row">
-            <label>Lunghezza tratto (px)</label>
-            <input
-              type="range"
-              id="gapKeep"
-              min="0"
-              max="80"
-              step="1"
-              value="20"
-            />
-            <span class="val" id="gapKeepVal">20</span>
           </div>
         </section>
 
         <section class="panel collapsed" data-tab="effects">
           <h2>Shape Mapping</h2>
           <div class="row">
-            <label
-              ><input type="checkbox" id="fxShapeMap" /> Forma poligono</label
-            >
+            <label><input type="checkbox" id="fxShapeMap" /> Forma poligono</label>
           </div>
           <div class="row">
             <label>Lati</label>
-            <input
-              type="range"
-              id="shapeSides"
-              min="3"
-              max="12"
-              step="1"
-              value="6"
-            />
+            <input type="range" id="shapeSides" min="3" max="12" step="1" value="6" />
             <span class="val" id="shapeSidesVal">6</span>
           </div>
           <div class="row">
             <label>Raggio (× font)</label>
-            <input
-              type="range"
-              id="shapeRadius"
-              min="0.1"
-              max="1.2"
-              step="0.05"
-              value="0.35"
-            />
+            <input type="range" id="shapeRadius" min="0.1" max="1.2" step="0.05" value="0.35" />
             <span class="val" id="shapeRadiusVal">0.35</span>
           </div>
           <div class="row">
             <label>Raggio interno (ratio)</label>
-            <input
-              type="range"
-              id="shapeInner"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.4"
-            />
+            <input type="range" id="shapeInner" min="0" max="1" step="0.01" value="0.4" />
             <span class="val" id="shapeInnerVal">0.4</span>
           </div>
           <div class="row">
             <label>Spaziatura (px)</label>
-            <input
-              type="range"
-              id="shapeSpacing"
-              min="4"
-              max="80"
-              step="1"
-              value="22"
-            />
+            <input type="range" id="shapeSpacing" min="4" max="80" step="1" value="22" />
             <span class="val" id="shapeSpacingVal">22</span>
           </div>
           <div class="row">
             <label>Twist (°)</label>
-            <input
-              type="range"
-              id="shapeTwist"
-              min="-180"
-              max="180"
-              step="1"
-              value="0"
-            />
+            <input type="range" id="shapeTwist" min="-180" max="180" step="1" value="0" />
             <span class="val" id="shapeTwistVal">0</span>
           </div>
           <div class="row">
-            <label
-              ><input type="checkbox" id="shapeFollow" checked /> Segui
-              tracciato</label
-            >
+            <label><input type="checkbox" id="shapeFollow" checked /> Segui tracciato</label>
           </div>
         </section>
 
-        <!-- ======================= -->
-        <!-- NUOVI PANNELLI: UI+UX  -->
-        <!-- ======================= -->
-
-        <!-- Colore & Tratto -->
         <section class="panel collapsed" data-tab="effects">
           <h2>Colore e Tratto</h2>
           <div class="row">
-            <label>Riempimento</label
-            ><input type="color" id="fillColor" value="#000000" />
+            <label>Riempimento</label>
+            <input type="color" id="fillColor" value="#000000" />
           </div>
           <div class="row">
-            <label>Tratto</label
-            ><input type="color" id="strokeColor" value="#000000" />
+            <label>Tratto</label>
+            <input type="color" id="strokeColor" value="#000000" />
           </div>
           <div class="row">
             <label>Spessore</label>
-            <input
-              type="range"
-              id="strokeWeight"
-              min="0"
-              max="16"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="strokeWeightVal">0</span>
-          </div>
-          <div class="row">
-            <label><input type="checkbox" id="useGradient" /> Gradiente</label>
-          </div>
-          <div class="row">
-            <label>Da</label><input type="color" id="gradA" value="#000000" />
-          </div>
-          <div class="row">
-            <label>A</label><input type="color" id="gradB" value="#ffffff" />
-          </div>
-          <div class="row">
-            <label>Angolo (°)</label>
-            <input
-              type="range"
-              id="gradAngle"
-              min="0"
-              max="360"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="gradAngleVal">0</span>
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="showPoints" /> Mostra punti</label
-            >
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="showBounds" /> Bounding box</label
-            >
-          </div>
-          <div class="row">
-            <label>Opacità riempimento</label>
-            <input
-              type="range"
-              id="fillAlpha"
-              min="0"
-              max="1"
-              step="0.01"
-              value="1"
-            />
-            <span class="val" id="fillAlphaVal">1</span>
-          </div>
-          <div class="row">
-            <label>Opacità contorno</label>
-            <input
-              type="range"
-              id="strokeAlpha"
-              min="0"
-              max="1"
-              step="0.01"
-              value="1"
-            />
-            <span class="val" id="strokeAlphaVal">1</span>
-          </div>
-        </section>
-
-        <!-- Layout -->
-        <section class="panel collapsed" data-tab="canvas">
-          <h2>Layout</h2>
-          <div class="row">
-            <label>Larghezza riga (px)</label>
-            <input
-              type="range"
-              id="wrapWidth"
-              min="200"
-              max="1400"
-              step="10"
-              value="800"
-            />
-            <span class="val" id="wrapWidthVal">800</span>
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="autoWrap" checked /> A capo
-              automatico</label
-            >
-          </div>
-          <div class="row">
-            <label>Scala X (%)</label>
-            <input
-              type="range"
-              id="scaleX"
-              min="25"
-              max="200"
-              step="1"
-              value="100"
-            />
-            <span class="val" id="scaleXVal">100</span>
-          </div>
-          <div class="row">
-            <label>Scala Y (%)</label>
-            <input
-              type="range"
-              id="scaleY"
-              min="25"
-              max="200"
-              step="1"
-              value="100"
-            />
-            <span class="val" id="scaleYVal">100</span>
-          </div>
-          <div class="row">
-            <label>Baseline shift (px)</label>
-            <input
-              type="range"
-              id="baselineShift"
-              min="-100"
-              max="100"
-              step="1"
-              value="0"
-            />
-            <span class="val" id="baselineShiftVal">0</span>
+            <input type="range" id="strokeWeight" min="0" max="16" step="1" value="8" disabled />
+            <span class="val" id="strokeWeightVal">8</span>
           </div>
           <div class="row">
             <label>Join</label>
             <select id="lineJoin">
               <option value="miter">Miter</option>
-              <option value="round">Round</option>
+              <option value="round" selected>Round</option>
               <option value="bevel">Bevel</option>
             </select>
           </div>
@@ -1483,83 +232,9 @@
             <label>Cap</label>
             <select id="lineCap">
               <option value="butt">Butt</option>
-              <option value="round">Round</option>
+              <option value="round" selected>Round</option>
               <option value="square">Square</option>
             </select>
-          </div>
-          <div class="row">
-            <label>Miter limit</label>
-            <input
-              type="range"
-              id="miterLimit"
-              min="1"
-              max="20"
-              step="1"
-              value="10"
-            />
-            <span class="val" id="miterLimitVal">10</span>
-          </div>
-          <div class="row">
-            <label>Colore sfondo</label
-            ><input type="color" id="bgColor" value="#ffffff" />
-          </div>
-        </section>
-
-        <!-- Canvas & Preset -->
-        <section class="panel collapsed" data-tab="canvas">
-          <h2>Canvas &amp; Preset</h2>
-          <div class="row">
-            <label><input type="checkbox" id="showGrid" /> Griglia</label>
-          </div>
-          <div class="row">
-            <label>Step griglia</label>
-            <input
-              type="range"
-              id="gridSize"
-              min="8"
-              max="128"
-              step="1"
-              value="32"
-            />
-            <span class="val" id="gridSizeVal">32</span>
-          </div>
-          <div class="row">
-            <label><input type="checkbox" id="showSafe" /> Area sicura</label>
-          </div>
-          <div class="row">
-            <label
-              ><input type="checkbox" id="exportBg" checked /> Esporta con
-              sfondo</label
-            >
-          </div>
-
-          <div class="row">
-            <label>Preset</label>
-            <select id="presetSelect">
-              <option value="Clean">Clean</option>
-              <option value="Soft Warp">Soft Warp</option>
-              <option value="Sharp Glitch">Sharp Glitch</option>
-              <option value="Low Contrast Sans">Low Contrast Sans</option>
-              <option value="High Contrast Didone">High Contrast Didone</option>
-            </select>
-          </div>
-          <div class="row">
-            <button id="btnApplyPreset" class="btn">Applica</button>
-          </div>
-          <div class="row">
-            <button id="btnRandomize" class="btn">Random</button>
-          </div>
-          <div class="row">
-            <button id="btnSavePreset" class="btn">Salva preset</button>
-          </div>
-          <div class="row">
-            <button id="btnCopyConfig" class="btn">Copia config</button>
-          </div>
-          <div class="row">
-            <button id="btnPasteConfig" class="btn">Incolla config</button>
-          </div>
-          <div class="row">
-            <button id="btnReset" class="btn">Reset UI</button>
           </div>
         </section>
       </aside>
@@ -1569,8 +244,7 @@
           <div id="canvasMount"></div>
         </div>
         <footer class="hintbar" id="hintbar">
-          Doppio clic nell'area di anteprima per editare il testo • Rispetta le
-          licenze dei font
+          Doppio clic nell'area di anteprima per editare il testo • Rispetta le licenze dei font
         </footer>
       </main>
     </div>

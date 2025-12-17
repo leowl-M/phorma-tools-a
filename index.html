@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Phorma</title>
+    <title>Phorma Tools</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,10 +15,10 @@
   </head>
   <body>
     <header class="topbar">
-      <h1>Phorma</h1>
+      <h1>Phorma Tools</h1>
       <div class="spacer"></div>
       <button id="btnExportPNG" class="btn">Esporta PNG</button>
-      <button id="btnExportPNGTrim" class="btn">PNG (ritagliato)</button>
+      <!-- <button id="btnExportPNGTrim" class="btn">PNG (ritagliato)</button> -->
       <button id="btnExportSVG" class="btn">Esporta SVG</button>
     </header>
 
@@ -57,70 +57,70 @@
         <!-- TIPOGRAFIA -->
         <section class="panel" data-tab="typography">
           <h2>Font</h2>
-          <div id="drop" class="dropzone">
+          <!-- <div id="drop" class="dropzone">
             Trascina qui un .ttf/.otf/.woff/.woff2 o clicca
           </div>
-          <input id="file" type="file" accept=".ttf,.otf,.woff,.woff2" hidden />
+          <input id="file" type="file" accept=".ttf,.otf,.woff,.woff2" hidden /> -->
           <div class="row">
-            <label for="localFont">Font salvati</label>
+            <label for="localFont">Seleziona</label>
             <select id="localFont">
               <option value="">(Seleziona un font)</option>
             </select>
           </div>
           <div class="row">
-            <label>Nome</label>
+            <label>Nome Font</label>
             <input id="fontName" type="text" placeholder="(dal font)" disabled />
           </div>
           <div class="row">
             <label>Stile</label>
             <input id="fontStyle" type="text" placeholder="(dal font)" disabled />
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <label><input type="checkbox" id="useKerning" checked /> Kerning</label>
           </div>
           <div class="row">
             <label><input type="checkbox" id="autoHint" checked /> Auto hint</label>
-          </div>
+          </div> -->
         </section>
 
         <section class="panel collapsed" data-tab="typography">
           <h2>Testo</h2>
           <div class="row">
-            <label for="text">Contenuto (solo parole, MAIUSCOLO)</label>
             <textarea id="text">PHORMA</textarea>
           </div>
           <div class="row">
             <label>Dimensione</label>
-            <input type="range" id="fontSize" min="24" max="640" value="140" />
+            <input type="range" id="fontSize" min="24" max="640" value="140" disabled />
             <span class="val" id="fontSizeVal">140</span>
           </div>
         </section>
 
         <!-- DEFORMAZIONI -->
         <section class="panel" data-tab="deformation">
-          <h2>Distorsioni statiche</h2>
-
           <div class="control-group">
-            <h3>Jitter</h3>
             <div class="row">
-              <label>Jitter</label>
+              <label>Vita</label>
               <input type="range" id="jitter" min="0" max="19" step="1" value="1" disabled/>
               <span class="val" id="jitterVal">1</span>
             </div>
           </div>
 
           <div class="control-group">
-            <h3>Contrasto calligrafico</h3>
-            <div class="row">
+            <!-- <div class="row">
               <label><input type="checkbox" id="fxContrast" checked /> Contrasto calligrafico</label>
-            </div>
+            </div> -->
             <div class="row">
-              <label>Intensità contrasto</label>
+              <label>Emozione #1</label>
               <input type="range" id="contrastAmount" min="-100" max="100" step="1" value="0" />
               <span class="val" id="contrastAmountVal">0</span>
             </div>
             <div class="row">
-              <label>Angolo penna</label>
+              <label>Emozione #2</label>
+              <input type="range" id="contrastBalance" min="-1" max="1" step="0.05" value="0" />
+              <span class="val" id="contrastBalanceVal">0</span>
+            </div>
+            <div class="row">
+              <label>Giorno</label>
               <input type="range" id="contrastAngle" min="0" max="365" step="1" value="1" disabled/>
               <span class="val" id="contrastAngleVal">1</span>
             </div>
@@ -130,7 +130,7 @@
               <span class="val" id="contrastSharpnessVal">0</span>
             </div> -->
             <div class="row">
-              <label>Mix effetto</label>
+              <label>Mese</label>
               <input type="range" id="contrastMix" min="0" max="1.20" step="0.01" value="0.10" disabled/>
               <span class="val" id="contrastMixVal">0.10</span>
             </div>
@@ -139,11 +139,7 @@
               <input type="range" id="contrastClamp" min="0" max="1" step="0.01" value="1" />
               <span class="val" id="contrastClampVal">1</span>
             </div> -->
-            <div class="row">
-              <label>Balance</label>
-              <input type="range" id="contrastBalance" min="-1" max="1" step="0.05" value="0" />
-              <span class="val" id="contrastBalanceVal">0</span>
-            </div>
+            
           </div>
 
           <div class="control-group">
@@ -171,25 +167,24 @@
 
         <!-- EFFETTI -->
         <section class="panel" data-tab="effects">
-          <h2>Curvature Bitcrush</h2>
-          <div class="row">
+          <!-- <div class="row">
             <label><input type="checkbox" id="fxCurvCrush" checked /> Curvature Bitcrush</label>
-          </div>
+          </div> -->
           <div class="row">
-            <label>Segmenti / curva</label>
+            <label>Segmenti</label>
             <input type="range" id="curvSegments" min="1" max="24" step="1" value="8" disabled/>
             <span class="val" id="curvSegmentsVal">8</span>
           </div>
           <div class="row">
-            <label>Angle-snap (°)</label>
+            <label>Angolo</label>
             <input type="range" id="curvAngleSnap" min="0" max="90" step="1" value="90" disabled />
             <span class="val" id="curvAngleSnapVal">0</span>
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <label>Tolleranza semplifica</label>
             <input type="range" id="curvTolerance" min="0" max="8" step="0.1" value="0" disabled/>
             <span class="val" id="curvToleranceVal">0</span>
-          </div>
+          </div> -->
         </section>
 
         <section class="panel collapsed" data-tab="effects">
@@ -242,22 +237,22 @@
             <input type="range" id="strokeWeight" min="0" max="16" step="1" value="8" disabled />
             <span class="val" id="strokeWeightVal">8</span>
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <label>Join</label>
             <select id="lineJoin">
               <option value="miter">Miter</option>
               <option value="round" selected>Round</option>
               <option value="bevel">Bevel</option>
             </select>
-          </div>
-          <div class="row">
+          </div> -->
+          <!-- <div class="row">
             <label>Cap</label>
             <select id="lineCap">
               <option value="butt">Butt</option>
               <option value="round" selected>Round</option>
               <option value="square">Square</option>
             </select>
-          </div>
+          </div> -->
         </section>
       </aside>
 
@@ -265,9 +260,6 @@
         <div id="canvasWrap">
           <div id="canvasMount"></div>
         </div>
-        <footer class="hintbar" id="hintbar">
-          Doppio clic nell'area di anteprima per editare il testo • Rispetta le licenze dei font
-        </footer>
       </main>
     </div>
 

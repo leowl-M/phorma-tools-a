@@ -554,6 +554,11 @@ const ui = {
   kinScaleXVal: byId("kinScaleXVal"),
   kinScaleY: byId("kinScaleY"),
   kinScaleYVal: byId("kinScaleYVal"),
+
+  // Temporizzazione debug
+  timeDebugEnabled: byId("timeDebugEnabled"),
+  btnResetTime: byId("btnResetTime"),
+  btnSimulateTime: byId("btnSimulateTime"),
 };
 
 const DEGREE_FIELDS = new Set([
@@ -1033,6 +1038,177 @@ ui.btnReset?.addEventListener("click", () => {
   location.reload();
 });
 
+// Funzione helper per verificare la password
+function checkPassword() {
+  const password = prompt("Inserisci la password:");
+  if (password === null) return false; // Utente ha annullato
+  return password === "Phorma2025";
+}
+
+/* ===== TEMPORIZZAZIONE PARAMETRI ===== */
+function applyTimeBasedParameters() {
+  const STORAGE_KEY = "PHORMA_TIME_REFERENCE";
+  const INITIAL_VALUES_KEY = "PHORMA_INITIAL_VALUES";
+  const SIMULATED_DAYS_KEY = "PHORMA_SIMULATED_DAYS";
+  const now = new Date();
+  
+  // Recupera giorni simulati (per test)
+  let simulatedDays = 0;
+  try {
+    simulatedDays = parseInt(localStorage.getItem(SIMULATED_DAYS_KEY) || "0", 10);
+  } catch (e) {
+    simulatedDays = 0;
+  }
+  
+  // Recupera o inizializza la data di riferimento e i valori iniziali
+  let referenceDate = localStorage.getItem(STORAGE_KEY);
+  let initialValues = null;
+  
+  try {
+    initialValues = JSON.parse(localStorage.getItem(INITIAL_VALUES_KEY) || "null");
+  } catch (e) {
+    initialValues = null;
+  }
+  
+  if (!referenceDate || !initialValues) {
+    // Prima volta: salva la data corrente e i valori iniziali come riferimento
+    referenceDate = now.toISOString();
+    localStorage.setItem(STORAGE_KEY, referenceDate);
+    
+    // Imposta i valori iniziali richiesti: jitter=1, angolo=1, mix=0.10
+    initialValues = {
+      jitter: 1,
+      contrastAngle: 1,
+      contrastMix: 0.10
+    };
+    localStorage.setItem(INITIAL_VALUES_KEY, JSON.stringify(initialValues));
+    
+    // Imposta anche i valori negli input
+    if (ui.jitter) {
+      ui.jitter.value = 1;
+      syncVal("jitter");
+    }
+    if (ui.contrastAngle) {
+      ui.contrastAngle.value = 1;
+      syncVal("contrastAngle");
+    }
+    if (ui.contrastMix) {
+      ui.contrastMix.value = 0.10;
+      syncVal("contrastMix");
+    }
+  }
+  
+  const refDate = new Date(referenceDate);
+  const realDaysDiff = Math.floor((now - refDate) / (1000 * 60 * 60 * 24));
+  const daysDiff = realDaysDiff + simulatedDays; // Aggiungi giorni simulati
+  const monthsDiff = daysDiff / 30; // Approssimazione: 1 mese = 30 giorni
+  const quartersDiff = daysDiff / 90; // 3 mesi = 90 giorni
+  
+  let hasChanges = false;
+  let debugInfo = {
+    refDate: referenceDate,
+    days: daysDiff,
+    months: monthsDiff.toFixed(2),
+    quarters: quartersDiff.toFixed(2),
+    jitterInit: initialValues.jitter,
+    jitterCurrent: parseFloat(ui.jitter?.value || 0),
+    jitterInc: 0,
+    angleInit: initialValues.contrastAngle,
+    angleCurrent: parseFloat(ui.contrastAngle?.value || 0),
+    angleInc: 0,
+    mixInit: initialValues.contrastMix,
+    mixCurrent: parseFloat(ui.contrastMix?.value || 0),
+    mixInc: 0
+  };
+  
+  // Jitter: incrementa di 1 ogni 3 mesi (90 giorni)
+  if (ui.jitter) {
+    const jitterIncrement = Math.floor(quartersDiff);
+    const newJitter = Math.min(19, Math.max(0, initialValues.jitter + jitterIncrement));
+    const currentJitter = parseFloat(ui.jitter.value) || 0;
+    debugInfo.jitterInc = jitterIncrement;
+    debugInfo.jitterCurrent = newJitter;
+    if (Math.abs(newJitter - currentJitter) > 0.01) {
+      ui.jitter.value = newJitter;
+      syncVal("jitter");
+      hasChanges = true;
+    }
+  }
+  
+  // Angolo penna (contrastAngle): incrementa di 1 ogni giorno
+  if (ui.contrastAngle) {
+    const angleIncrement = Math.floor(daysDiff);
+    const newAngle = Math.min(365, Math.max(0, initialValues.contrastAngle + angleIncrement));
+    const currentAngle = parseFloat(ui.contrastAngle.value) || 0;
+    debugInfo.angleInc = angleIncrement;
+    debugInfo.angleCurrent = newAngle;
+    if (Math.abs(newAngle - currentAngle) > 0.01) {
+      ui.contrastAngle.value = newAngle;
+      syncVal("contrastAngle");
+      hasChanges = true;
+    }
+  }
+  
+  // Mix effetto (contrastMix): incrementa di 0.10 ogni mese (30 giorni)
+  if (ui.contrastMix) {
+    const mixIncrement = Math.floor(monthsDiff) * 0.10;
+    const newMix = Math.min(1.20, Math.max(0, initialValues.contrastMix + mixIncrement));
+    const currentMix = parseFloat(ui.contrastMix.value) || 0;
+    debugInfo.mixInc = mixIncrement.toFixed(2);
+    debugInfo.mixCurrent = parseFloat(newMix.toFixed(2));
+    if (Math.abs(newMix - currentMix) > 0.01) {
+      ui.contrastMix.value = newMix.toFixed(2);
+      syncVal("contrastMix");
+      hasChanges = true;
+    }
+  }
+  
+  // Aggiorna il pannello di debug se abilitato
+  updateTimeDebugInfo(debugInfo);
+  
+  // Aggiorna il rendering se ci sono stati cambiamenti
+  if (hasChanges) {
+    invalidateGeometry();
+    redraw();
+  }
+}
+
+function updateTimeDebugInfo(info) {
+  const debugPanel = document.getElementById("timeDebugInfo");
+  if (!debugPanel) return;
+  
+  const refDateEl = document.getElementById("debugRefDate");
+  const daysEl = document.getElementById("debugDays");
+  const monthsEl = document.getElementById("debugMonths");
+  const quartersEl = document.getElementById("debugQuarters");
+  const jitterInitEl = document.getElementById("debugJitterInit");
+  const jitterCurrentEl = document.getElementById("debugJitterCurrent");
+  const jitterIncEl = document.getElementById("debugJitterInc");
+  const angleInitEl = document.getElementById("debugAngleInit");
+  const angleCurrentEl = document.getElementById("debugAngleCurrent");
+  const angleIncEl = document.getElementById("debugAngleInc");
+  const mixInitEl = document.getElementById("debugMixInit");
+  const mixCurrentEl = document.getElementById("debugMixCurrent");
+  const mixIncEl = document.getElementById("debugMixInc");
+  
+  if (refDateEl) {
+    const date = new Date(info.refDate);
+    refDateEl.textContent = date.toLocaleDateString("it-IT") + " " + date.toLocaleTimeString("it-IT");
+  }
+  if (daysEl) daysEl.textContent = info.days;
+  if (monthsEl) monthsEl.textContent = info.months;
+  if (quartersEl) quartersEl.textContent = info.quarters;
+  if (jitterInitEl) jitterInitEl.textContent = info.jitterInit;
+  if (jitterCurrentEl) jitterCurrentEl.textContent = info.jitterCurrent;
+  if (jitterIncEl) jitterIncEl.textContent = info.jitterInc;
+  if (angleInitEl) angleInitEl.textContent = info.angleInit;
+  if (angleCurrentEl) angleCurrentEl.textContent = info.angleCurrent;
+  if (angleIncEl) angleIncEl.textContent = info.angleInc;
+  if (mixInitEl) mixInitEl.textContent = info.mixInit;
+  if (mixCurrentEl) mixCurrentEl.textContent = info.mixCurrent;
+  if (mixIncEl) mixIncEl.textContent = info.mixInc;
+}
+
 /* bootstrap */
 document.addEventListener("DOMContentLoaded", async () => {
   populateLocalFontSelect();
@@ -1051,6 +1227,76 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
     ui.text.addEventListener("input", apply);
     apply();
+  }
+
+  // Applica temporizzazione automatica dei parametri
+  applyTimeBasedParameters();
+
+  // Mostra il pannello di debug se il checkbox è già selezionato
+  if (ui.timeDebugEnabled?.checked) {
+    const debugPanel = document.getElementById("timeDebugInfo");
+    if (debugPanel) {
+      debugPanel.style.display = "block";
+    }
+  }
+
+  // Listener per il pannello di debug temporizzazione
+  ui.timeDebugEnabled?.addEventListener("change", (e) => {
+    const debugPanel = document.getElementById("timeDebugInfo");
+    if (debugPanel) {
+      debugPanel.style.display = e.target.checked ? "block" : "none";
+      if (e.target.checked) {
+        applyTimeBasedParameters(); // Aggiorna le info quando si apre
+      }
+    }
+  });
+
+  // Listener per i pulsanti di temporizzazione (con password)
+  const btnResetTime = document.getElementById("btnResetTime");
+  if (btnResetTime) {
+    btnResetTime.addEventListener("click", () => {
+      const password = prompt("Inserisci la password:");
+      if (password === null) {
+        // Utente ha annullato
+        return;
+      }
+      if (password !== "Phorma2025") {
+        alert("Password errata. Operazione annullata.");
+        return;
+      }
+      if (confirm("Vuoi resettare la temporizzazione? I valori torneranno ai valori iniziali.")) {
+        localStorage.removeItem("PHORMA_TIME_REFERENCE");
+        localStorage.removeItem("PHORMA_INITIAL_VALUES");
+        localStorage.removeItem("PHORMA_SIMULATED_DAYS");
+        location.reload();
+      }
+    });
+  }
+
+  const btnSimulateTime = document.getElementById("btnSimulateTime");
+  if (btnSimulateTime) {
+    btnSimulateTime.addEventListener("click", () => {
+      const password = prompt("Inserisci la password:");
+      if (password === null) {
+        // Utente ha annullato
+        return;
+      }
+      if (password !== "Phorma2025") {
+        alert("Password errata. Operazione annullata.");
+        return;
+      }
+      const SIMULATED_DAYS_KEY = "PHORMA_SIMULATED_DAYS";
+      let simulatedDays = 0;
+      try {
+        simulatedDays = parseInt(localStorage.getItem(SIMULATED_DAYS_KEY) || "0", 10);
+      } catch (e) {
+        simulatedDays = 0;
+      }
+      simulatedDays += 1;
+      localStorage.setItem(SIMULATED_DAYS_KEY, simulatedDays.toString());
+      applyTimeBasedParameters();
+      alert(`Simulato +1 giorno (totale giorni simulati: ${simulatedDays})`);
+    });
   }
 
 });

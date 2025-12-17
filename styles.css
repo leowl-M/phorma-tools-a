@@ -295,6 +295,7 @@ input[type="range"] {
 .panel .row .val {
   min-width: 44px;
   text-align: right;
+  
   font-variant-numeric: tabular-nums;
 }
 .btn {

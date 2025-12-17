@@ -104,8 +104,8 @@
             <h3>Jitter</h3>
             <div class="row">
               <label>Jitter</label>
-              <input type="range" id="jitter" min="0" max="19" step="1" value="0" />
-              <span class="val" id="jitterVal">0</span>
+              <input type="range" id="jitter" min="0" max="19" step="1" value="1" disabled/>
+              <span class="val" id="jitterVal">1</span>
             </div>
           </div>
 
@@ -121,8 +121,8 @@
             </div>
             <div class="row">
               <label>Angolo penna</label>
-              <input type="range" id="contrastAngle" min="0" max="365" step="1" value="30" />
-              <span class="val" id="contrastAngleVal">30</span>
+              <input type="range" id="contrastAngle" min="0" max="365" step="1" value="1" disabled/>
+              <span class="val" id="contrastAngleVal">1</span>
             </div>
             <!-- <div class="row">
               <label>Sharpness</label>
@@ -131,8 +131,8 @@
             </div> -->
             <div class="row">
               <label>Mix effetto</label>
-              <input type="range" id="contrastMix" min="0" max="1.20" step="0.01" value="1" />
-              <span class="val" id="contrastMixVal">1</span>
+              <input type="range" id="contrastMix" min="0" max="1.20" step="0.01" value="0.10" disabled/>
+              <span class="val" id="contrastMixVal">0.10</span>
             </div>
             <!-- <div class="row">
               <label>Clamp contrasto</label>
@@ -143,6 +143,28 @@
               <label>Balance</label>
               <input type="range" id="contrastBalance" min="-1" max="1" step="0.05" value="0" />
               <span class="val" id="contrastBalanceVal">0</span>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <h3>Temporizzazione</h3>
+            <div class="row">
+              <label><input type="checkbox" id="timeDebugEnabled" /> Mostra debug temporizzazione</label>
+            </div>
+            <div id="timeDebugInfo" style="display: none; font-size: 11px; color: var(--muted); margin-top: 8px; padding: 8px; background: #f5f5f5; border: 1px solid var(--ink);">
+              <div><strong>Data riferimento:</strong> <span id="debugRefDate">-</span></div>
+              <div><strong>Giorni trascorsi:</strong> <span id="debugDays">-</span></div>
+              <div><strong>Mesi trascorsi:</strong> <span id="debugMonths">-</span></div>
+              <div><strong>Trimestri trascorsi:</strong> <span id="debugQuarters">-</span></div>
+              <div style="margin-top: 8px; border-top: 1px solid var(--ink); padding-top: 8px;">
+                <div><strong>Jitter:</strong> iniziale <span id="debugJitterInit">-</span> → attuale <span id="debugJitterCurrent">-</span> (+<span id="debugJitterInc">-</span>)</div>
+                <div><strong>Angolo:</strong> iniziale <span id="debugAngleInit">-</span> → attuale <span id="debugAngleCurrent">-</span> (+<span id="debugAngleInc">-</span>)</div>
+                <div><strong>Mix:</strong> iniziale <span id="debugMixInit">-</span> → attuale <span id="debugMixCurrent">-</span> (+<span id="debugMixInc">-</span>)</div>
+              </div>
+              <div style="margin-top: 8px;">
+                <button type="button" id="btnResetTime" class="btn" style="width: 100%; font-size: 11px; padding: 4px 8px;">Reset temporizzazione</button>
+                <button type="button" id="btnSimulateTime" class="btn" style="width: 100%; font-size: 11px; padding: 4px 8px; margin-top: 4px;">Simula +1 giorno</button>
+              </div>
             </div>
           </div>
         </section>

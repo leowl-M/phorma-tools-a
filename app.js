@@ -286,6 +286,24 @@ const EMBED_STATE_KEY = "PHORMA_EMBED_STATE";
 // Detect embed mode early
 const IS_EMBED_MODE = window.location.pathname.includes("embed");
 
+/* ===== EMBED COLOR CONTROL ===== */
+function applyEmbedColorParams() {
+  if (!IS_EMBED_MODE) return;
+
+  const params = new URLSearchParams(window.location.search);
+
+  const fill = params.get("fill");
+  const stroke = params.get("stroke");
+
+  if (fill && ui.fillColor) {
+    ui.fillColor.value = "#" + fill.replace("#", "");
+  }
+
+  if (stroke && ui.strokeColor) {
+    ui.strokeColor.value = "#" + stroke.replace("#", "");
+  }
+}
+
 const ui = {
   // Font
   drop: byId("drop"),
@@ -1238,6 +1256,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Embed: applica stato salvato da index, poi temporizzazione
     applyStateFromStorage();
     applyTimeBasedParameters();
+    applyEmbedColorParams();
     redraw();
     // Quando index (o altro tab) aggiorna localStorage, aggiorna l'embed
     window.addEventListener("storage", (e) => {

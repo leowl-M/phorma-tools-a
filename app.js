@@ -1230,8 +1230,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const isEmbed = window.location.pathname.includes("embed");
 
 if (isEmbed) {
-  document.querySelector(".topbar")?.remove();
-  document.getElementById("sidebar")?.remove();
+  const sidebar = document.getElementById("sidebar");
+const h = sidebar ? sidebar.clientHeight : window.innerHeight;
 }
   }
 

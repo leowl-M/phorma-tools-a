@@ -1227,6 +1227,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
     ui.text.addEventListener("input", apply);
     apply();
+    const isEmbed = window.location.pathname.includes("embed");
+
+if (isEmbed) {
+  document.querySelector(".topbar")?.remove();
+  document.getElementById("sidebar")?.remove();
+}
   }
 
   // Applica temporizzazione automatica dei parametri

@@ -2604,8 +2604,9 @@ function runWidth(run, size, state) {
 }
 
 function renderScene(p, state, { noBackground = false } = {}) {
-  p.clear();
-  if (!noBackground) {
+  p.clear(); // questo pulisce il frame
+
+  if (!IS_EMBED_MODE && !noBackground) {
     p.background(state.bgColor || "#ffffff");
   }
   renderText(p, state, p.width, p.height);

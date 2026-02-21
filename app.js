@@ -286,33 +286,6 @@ const EMBED_STATE_KEY = "PHORMA_EMBED_STATE";
 // Detect embed mode early
 const IS_EMBED_MODE = window.location.pathname.includes("embed");
 
-/* ===== EMBED URL PARAMS (Framer Control) ===== */
-function applyEmbedParamsFromUrl() {
-  if (!IS_EMBED_MODE) return;
-
-  const params = new URLSearchParams(window.location.search);
-
-  const fill = params.get("fill");
-  const stroke = params.get("stroke");
-  const bg = params.get("bg");
-
-  if (fill && ui.fillColor) {
-    ui.fillColor.value = "#" + fill.replace("#", "");
-  }
-
-  if (stroke && ui.strokeColor) {
-    ui.strokeColor.value = "#" + stroke.replace("#", "");
-  }
-
-  if (bg) {
-    // Aggiorna sia stato che body
-    if (ui.bgColor) {
-      ui.bgColor.value = "#" + bg.replace("#", "");
-    }
-    document.body.style.background = "#" + bg.replace("#", "");
-  }
-}
-
 const ui = {
   // Font
   drop: byId("drop"),
@@ -1247,27 +1220,11 @@ function updateTimeDebugInfo(info) {
 /* bootstrap */
 document.addEventListener("DOMContentLoaded", async () => {
   // Skip UI initialization in embed mode
-  if (IS_EMBED_MODE) {
-    applyStateFromStorage();
-    applyTimeBasedParameters();
-    applyEmbedParamsFromUrl(); // <-- NUOVO
-  
-    redraw();
-  
-    window.addEventListener("storage", (e) => {
-      if (
-        e.key === EMBED_STATE_KEY ||
-        e.key === "PHORMA_SIMULATED_DAYS" ||
-        e.key === "PHORMA_TIME_REFERENCE" ||
-        e.key === "PHORMA_INITIAL_VALUES"
-      ) {
-        applyStateFromStorage();
-        applyTimeBasedParameters();
-        applyEmbedParamsFromUrl(); // <-- NUOVO
-        invalidateGeometry();
-        redraw();
-      }
-    });
+  if (!IS_EMBED_MODE) {
+    populateLocalFontSelect();
+    initSidebarTabs();
+    initPanelToggles();
+    initRangeDoubleClickReset();
   } else {
     // Remove any UI elements that might exist
     document.querySelector(".topbar")?.remove();
@@ -2648,14 +2605,15 @@ function runWidth(run, size, state) {
 
 function renderScene(p, state, { noBackground = false } = {}) {
   p.clear();
-
   if (!noBackground) {
-    if (IS_EMBED_MODE) {
-      // In embed mode il background lo controlla l'URL
-      p.background(state.bgColor || "transparent");
-    } else {
-      p.background(state.bgColor || "#ffffff");
-    }
+    p.background(state.bgColor || "#ffffff");
+  }
+  renderText(p, state, p.width, p.height);
+  if (state.showGrid) {
+    drawGrid(p, state);
+  }
+  if (state.showSafe) {
+    drawSafeArea(p, state);
   }
 }
 function drawGrid(p, state) {

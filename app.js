@@ -281,6 +281,10 @@ const LOCAL_FONT_PRESETS = [
 ];
 
 const TAB_STORAGE_KEY = "FGS_ACTIVE_TAB";
+const EMBED_STATE_KEY = "PHORMA_EMBED_STATE";
+
+// Detect embed mode early
+const IS_EMBED_MODE = window.location.pathname.includes("embed");
 
 const ui = {
   // Font
@@ -559,6 +563,7 @@ const ui = {
   timeDebugEnabled: byId("timeDebugEnabled"),
   btnResetTime: byId("btnResetTime"),
   btnSimulateTime: byId("btnSimulateTime"),
+  btnSimulateYear: byId("btnSimulateYear"),
 };
 
 const DEGREE_FIELDS = new Set([
@@ -964,6 +969,7 @@ function initRangeDoubleClickReset() {
   "perLetterScale",
 ].forEach(
   (k) =>
+    !IS_EMBED_MODE &&
     ui[k] &&
     ui[k].addEventListener("input", () => {
       invalidateLayout();
@@ -971,72 +977,74 @@ function initRangeDoubleClickReset() {
     })
 );
 
-/* drag & drop */
-ui.drop?.addEventListener("click", () => ui.file?.click());
-["dragenter", "dragover"].forEach((e) =>
-  ui.drop?.addEventListener(e, (ev) => {
-    ev.preventDefault();
-    ui.drop.classList.add("drag");
-  })
-);
-["dragleave", "drop"].forEach((e) =>
-  ui.drop?.addEventListener(e, (ev) => {
-    ev.preventDefault();
-    ui.drop.classList.remove("drag");
-  })
-);
-ui.drop?.addEventListener("drop", (ev) => {
-  const f = ev.dataTransfer.files?.[0];
-  if (f) loadFont(f);
-});
-ui.file?.addEventListener("change", () => {
-  const f = ui.file.files?.[0];
-  if (f) loadFont(f);
-});
-ui.localFont?.addEventListener("change", async () => {
-  const select = ui.localFont;
-  if (!select) return;
-  const selected = select.value;
-  if (!selected) {
-    select.dataset.currentUrl = "";
-    return;
-  }
-  const previous = select.dataset.currentUrl || "";
-  const success = await loadFontFromUrl(selected);
-  if (!success) {
-    select.value = previous;
-  }
-});
+/* drag & drop (skip in embed mode) */
+if (!IS_EMBED_MODE) {
+  ui.drop?.addEventListener("click", () => ui.file?.click());
+  ["dragenter", "dragover"].forEach((e) =>
+    ui.drop?.addEventListener(e, (ev) => {
+      ev.preventDefault();
+      ui.drop.classList.add("drag");
+    })
+  );
+  ["dragleave", "drop"].forEach((e) =>
+    ui.drop?.addEventListener(e, (ev) => {
+      ev.preventDefault();
+      ui.drop.classList.remove("drag");
+    })
+  );
+  ui.drop?.addEventListener("drop", (ev) => {
+    const f = ev.dataTransfer.files?.[0];
+    if (f) loadFont(f);
+  });
+  ui.file?.addEventListener("change", () => {
+    const f = ui.file.files?.[0];
+    if (f) loadFont(f);
+  });
+  ui.localFont?.addEventListener("change", async () => {
+    const select = ui.localFont;
+    if (!select) return;
+    const selected = select.value;
+    if (!selected) {
+      select.dataset.currentUrl = "";
+      return;
+    }
+    const previous = select.dataset.currentUrl || "";
+    const success = await loadFontFromUrl(selected);
+    if (!success) {
+      select.value = previous;
+    }
+  });
 
-/* doppio click per edit rapido */
-byId("canvasWrap")?.addEventListener("dblclick", () => {
-  const t = prompt("Testo di anteprima:", gv(ui.text, ""));
-  if (t != null && ui.text) {
-    ui.text.value = sanitizeTextInput(t);
-    invalidateLayout();
-    redraw();
-  }
-});
+  /* doppio click per edit rapido */
+  byId("canvasWrap")?.addEventListener("dblclick", () => {
+    const t = prompt("Testo di anteprima:", gv(ui.text, ""));
+    if (t != null && ui.text) {
+      ui.text.value = sanitizeTextInput(t);
+      invalidateLayout();
+      redraw();
+    }
+  });
 
-/* export */
-ui.btnPNG?.addEventListener("click", () => {
-  if (sketch) sketch.saveCanvas("glitch", "png");
-});
-ui.btnPNGTrim?.addEventListener("click", exportPNGTrimmed);
-ui.btnSVG?.addEventListener("click", exportSVG);
+  /* export */
+  ui.btnPNG?.addEventListener("click", () => {
+    if (sketch) sketch.saveCanvas("glitch", "png");
+  });
+  ui.btnPNGTrim?.addEventListener("click", exportPNGTrimmed);
+  ui.btnSVG?.addEventListener("click", exportSVG);
 
-/* preset (opzionali) */
-ui.btnApplyPreset?.addEventListener("click", () =>
-  applyPreset(gv(ui.presetSelect, ""))
-);
-ui.btnRandomize?.addEventListener("click", randomizeCurrent);
-ui.btnSavePreset?.addEventListener("click", savePresetDialog);
-ui.btnCopyConfig?.addEventListener("click", copyConfig);
-ui.btnPasteConfig?.addEventListener("click", pasteConfig);
-ui.btnReset?.addEventListener("click", () => {
-  localStorage.removeItem("FGS_USER_PRESET");
-  location.reload();
-});
+  /* preset (opzionali) */
+  ui.btnApplyPreset?.addEventListener("click", () =>
+    applyPreset(gv(ui.presetSelect, ""))
+  );
+  ui.btnRandomize?.addEventListener("click", randomizeCurrent);
+  ui.btnSavePreset?.addEventListener("click", savePresetDialog);
+  ui.btnCopyConfig?.addEventListener("click", copyConfig);
+  ui.btnPasteConfig?.addEventListener("click", pasteConfig);
+  ui.btnReset?.addEventListener("click", () => {
+    localStorage.removeItem("FGS_USER_PRESET");
+    location.reload();
+  });
+}
 
 // Funzione helper per verificare la password
 function checkPassword() {
@@ -1211,14 +1219,47 @@ function updateTimeDebugInfo(info) {
 
 /* bootstrap */
 document.addEventListener("DOMContentLoaded", async () => {
-  populateLocalFontSelect();
-  initSidebarTabs();
-  initPanelToggles();
-  initRangeDoubleClickReset();
+  // Skip UI initialization in embed mode
+  if (!IS_EMBED_MODE) {
+    populateLocalFontSelect();
+    initSidebarTabs();
+    initPanelToggles();
+    initRangeDoubleClickReset();
+  } else {
+    // Remove any UI elements that might exist
+    document.querySelector(".topbar")?.remove();
+    document.getElementById("sidebar")?.remove();
+  }
+  
   if (!sketch) makeSketch();
   await loadDefaultFontSafe();
-  // Testo: forza MAIUSCOLO e solo parole
-  if (ui.text) {
+
+  if (IS_EMBED_MODE) {
+    // Embed: applica stato salvato da index, poi temporizzazione
+    applyStateFromStorage();
+    applyTimeBasedParameters();
+    redraw();
+    // Quando index (o altro tab) aggiorna localStorage, aggiorna l'embed
+    window.addEventListener("storage", (e) => {
+      if (
+        e.key === EMBED_STATE_KEY ||
+        e.key === "PHORMA_SIMULATED_DAYS" ||
+        e.key === "PHORMA_TIME_REFERENCE" ||
+        e.key === "PHORMA_INITIAL_VALUES"
+      ) {
+        applyStateFromStorage();
+        applyTimeBasedParameters();
+        invalidateGeometry();
+        redraw();
+      }
+    });
+  } else {
+    // Index: salva stato iniziale
+    saveStateToStorage();
+  }
+  
+  // Testo: forza MAIUSCOLO e solo parole (only in non-embed mode)
+  if (!IS_EMBED_MODE && ui.text) {
     const apply = () => {
       const cleaned = sanitizeTextInput(ui.text.value);
       if (ui.text.value !== cleaned) ui.text.value = cleaned;
@@ -1227,84 +1268,108 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
     ui.text.addEventListener("input", apply);
     apply();
-    const isEmbed = window.location.pathname.includes("embed");
-
-if (isEmbed) {
-  document.querySelector(".topbar")?.remove();
-  document.getElementById("sidebar")?.remove();
-}
   }
 
-  // Applica temporizzazione automatica dei parametri
-  applyTimeBasedParameters();
+  // Applica temporizzazione automatica dei parametri (index)
+  if (!IS_EMBED_MODE) applyTimeBasedParameters();
 
-  // Mostra il pannello di debug se il checkbox è già selezionato
-  if (ui.timeDebugEnabled?.checked) {
-    const debugPanel = document.getElementById("timeDebugInfo");
-    if (debugPanel) {
-      debugPanel.style.display = "block";
-    }
-  }
-
-  // Listener per il pannello di debug temporizzazione
-  ui.timeDebugEnabled?.addEventListener("change", (e) => {
-    const debugPanel = document.getElementById("timeDebugInfo");
-    if (debugPanel) {
-      debugPanel.style.display = e.target.checked ? "block" : "none";
-      if (e.target.checked) {
-        applyTimeBasedParameters(); // Aggiorna le info quando si apre
+  // UI-specific listeners (skip in embed mode)
+  if (!IS_EMBED_MODE) {
+    // Mostra il pannello di debug se il checkbox è già selezionato
+    if (ui.timeDebugEnabled?.checked) {
+      const debugPanel = document.getElementById("timeDebugInfo");
+      if (debugPanel) {
+        debugPanel.style.display = "block";
       }
     }
-  });
 
-  // Listener per i pulsanti di temporizzazione (con password)
-  const btnResetTime = document.getElementById("btnResetTime");
-  if (btnResetTime) {
-    btnResetTime.addEventListener("click", () => {
-      const password = prompt("Inserisci la password:");
-      if (password === null) {
-        // Utente ha annullato
-        return;
-      }
-      if (password !== "Phorma2025") {
-        alert("Password errata. Operazione annullata.");
-        return;
-      }
-      if (confirm("Vuoi resettare la temporizzazione? I valori torneranno ai valori iniziali.")) {
-        localStorage.removeItem("PHORMA_TIME_REFERENCE");
-        localStorage.removeItem("PHORMA_INITIAL_VALUES");
-        localStorage.removeItem("PHORMA_SIMULATED_DAYS");
-        location.reload();
+    // Listener per il pannello di debug temporizzazione
+    ui.timeDebugEnabled?.addEventListener("change", (e) => {
+      const debugPanel = document.getElementById("timeDebugInfo");
+      if (debugPanel) {
+        debugPanel.style.display = e.target.checked ? "block" : "none";
+        if (e.target.checked) {
+          applyTimeBasedParameters(); // Aggiorna le info quando si apre
+        }
       }
     });
-  }
 
-  const btnSimulateTime = document.getElementById("btnSimulateTime");
-  if (btnSimulateTime) {
-    btnSimulateTime.addEventListener("click", () => {
-      const password = prompt("Inserisci la password:");
-      if (password === null) {
-        // Utente ha annullato
-        return;
-      }
-      if (password !== "Phorma2025") {
-        alert("Password errata. Operazione annullata.");
-        return;
-      }
-      const SIMULATED_DAYS_KEY = "PHORMA_SIMULATED_DAYS";
-      let simulatedDays = 0;
-      try {
-        simulatedDays = parseInt(localStorage.getItem(SIMULATED_DAYS_KEY) || "0", 10);
-      } catch (e) {
-        simulatedDays = 0;
-      }
-      simulatedDays += 1;
-      localStorage.setItem(SIMULATED_DAYS_KEY, simulatedDays.toString());
-      applyTimeBasedParameters();
-      alert(`Simulato +1 giorno (totale giorni simulati: ${simulatedDays})`);
-    });
-  }
+    // Listener per i pulsanti di temporizzazione (con password)
+    const btnResetTime = document.getElementById("btnResetTime");
+    if (btnResetTime) {
+      btnResetTime.addEventListener("click", () => {
+        const password = prompt("Inserisci la password:");
+        if (password === null) {
+          // Utente ha annullato
+          return;
+        }
+        if (password !== "Phorma2025") {
+          alert("Password errata. Operazione annullata.");
+          return;
+        }
+        if (confirm("Vuoi resettare la temporizzazione? I valori torneranno ai valori iniziali.")) {
+          localStorage.removeItem("PHORMA_TIME_REFERENCE");
+          localStorage.removeItem("PHORMA_INITIAL_VALUES");
+          localStorage.removeItem("PHORMA_SIMULATED_DAYS");
+          location.reload();
+        }
+      });
+    }
 
+    const btnSimulateTime = document.getElementById("btnSimulateTime");
+    if (btnSimulateTime) {
+      btnSimulateTime.addEventListener("click", () => {
+        const password = prompt("Inserisci la password:");
+        if (password === null) {
+          // Utente ha annullato
+          return;
+        }
+        if (password !== "Phorma2025") {
+          alert("Password errata. Operazione annullata.");
+          return;
+        }
+        const SIMULATED_DAYS_KEY = "PHORMA_SIMULATED_DAYS";
+        let simulatedDays = 0;
+        try {
+          simulatedDays = parseInt(localStorage.getItem(SIMULATED_DAYS_KEY) || "0", 10);
+        } catch (e) {
+          simulatedDays = 0;
+        }
+        simulatedDays += 1;
+        localStorage.setItem(SIMULATED_DAYS_KEY, simulatedDays.toString());
+        applyTimeBasedParameters();
+        redraw();
+        alert(`Simulato +1 giorno (totale giorni simulati: ${simulatedDays})`);
+      });
+    }
+
+    const btnSimulateYear = document.getElementById("btnSimulateYear");
+    if (btnSimulateYear) {
+      btnSimulateYear.addEventListener("click", () => {
+        const password = prompt("Inserisci la password:");
+        if (password === null) {
+          // Utente ha annullato
+          return;
+        }
+        if (password !== "Phorma2025") {
+          alert("Password errata. Operazione annullata.");
+          return;
+        }
+        const SIMULATED_DAYS_KEY = "PHORMA_SIMULATED_DAYS";
+        let simulatedDays = 0;
+        try {
+          simulatedDays = parseInt(localStorage.getItem(SIMULATED_DAYS_KEY) || "0", 10);
+        } catch (e) {
+          simulatedDays = 0;
+        }
+        simulatedDays += 365; // +1 anno = 365 giorni
+        localStorage.setItem(SIMULATED_DAYS_KEY, simulatedDays.toString());
+        applyTimeBasedParameters();
+        redraw();
+        alert(`Simulato +1 anno (365 giorni) (totale giorni simulati: ${simulatedDays})`);
+      });
+    }
+  }
 });
 
 /* ===== FONT LOAD ===== */
@@ -1385,20 +1450,54 @@ async function loadFont(file) {
 /* ===== p5 ===== */
 function makeSketch() {
   const mount = byId("canvasMount");
+  if (!mount) {
+    console.error("canvasMount element not found");
+    return;
+  }
+  
+  // In embed mode, use logoContainer; otherwise use canvasWrap
+  const container = IS_EMBED_MODE 
+    ? byId("logoContainer") || mount.parentElement
+    : byId("canvasWrap") || mount.parentElement;
+  
   sketch = new p5((p) => {
-    let W = mount.clientWidth,
-      H = byId("canvasWrap").clientHeight;
+    let W = mount.clientWidth || container?.clientWidth || 800,
+      H = mount.clientHeight || container?.clientHeight || 600;
+    let resizeObserver = null;
+    
     p.setup = function () {
       const c = p.createCanvas(W, H);
       c.parent(mount);
       p.noLoop();
       p.pixelDensity(1);
+      
+      // Use ResizeObserver for better iframe resize handling (set up after canvas is created)
+      resizeObserver = new ResizeObserver(() => {
+        const newW = mount.clientWidth || container?.clientWidth || W;
+        const newH = mount.clientHeight || container?.clientHeight || H;
+        if (newW !== W || newH !== H) {
+          W = newW;
+          H = newH;
+          p.resizeCanvas(W, H);
+          p.redraw();
+        }
+      });
+      
+      resizeObserver.observe(mount);
+      if (container && container !== mount) {
+        resizeObserver.observe(container);
+      }
     };
+    
     p.windowResized = function () {
-      W = mount.clientWidth;
-      H = byId("canvasWrap").clientHeight;
-      p.resizeCanvas(W, H);
-      p.redraw();
+      const newW = mount.clientWidth || container?.clientWidth || W;
+      const newH = mount.clientHeight || container?.clientHeight || H;
+      if (newW !== W || newH !== H) {
+        W = newW;
+        H = newH;
+        p.resizeCanvas(W, H);
+        p.redraw();
+      }
     };
     p.draw = function () {
       if (!baseFont) {
@@ -1419,9 +1518,12 @@ function makeSketch() {
     };
   }, mount);
 
+  // In embed mode, always animate; otherwise check UI checkbox
   (function tick() {
-    if (ui.animate?.checked && sketch) {
-      sketch.redraw();
+    if (sketch) {
+      if (IS_EMBED_MODE || ui.animate?.checked) {
+        sketch.redraw();
+      }
     }
     requestAnimationFrame(tick);
   })();
@@ -1591,6 +1693,47 @@ function getState() {
 
 function redraw() {
   if (sketch) sketch.redraw();
+  if (!IS_EMBED_MODE) saveStateToStorage();
+}
+
+/** Salva lo stato UI su localStorage così l'embed può sincronizzarsi */
+function saveStateToStorage() {
+  try {
+    const state = {};
+    for (const [k, el] of Object.entries(ui)) {
+      if (!el) continue;
+      if (el.type === "checkbox") {
+        state[k] = el.checked;
+      } else if (el.value !== undefined) {
+        state[k] = el.value;
+      }
+    }
+    localStorage.setItem(EMBED_STATE_KEY, JSON.stringify(state));
+  } catch (e) {
+    // ignore
+  }
+}
+
+/** Applica lo stato salvato (da index) agli elementi UI – usato in embed */
+function applyStateFromStorage() {
+  try {
+    const raw = localStorage.getItem(EMBED_STATE_KEY);
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    for (const [k, v] of Object.entries(state)) {
+      const el = ui[k] || byId(k);
+      if (!el) continue;
+      if (el.type === "checkbox") {
+        el.checked = !!v;
+      } else if (el.value !== undefined) {
+        el.value = v;
+      }
+      const valEl = ui[k + "Val"] || byId(k + "Val");
+      if (valEl && typeof v !== "boolean") valEl.textContent = v;
+    }
+  } catch (e) {
+    // ignore
+  }
 }
 
 /* ===== helpers deform ===== */
